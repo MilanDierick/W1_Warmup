@@ -156,6 +156,9 @@
   <ItemGroup>
     <ClCompile Include="2DAE_DierickMilan_Prog3_W1.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ConsoleInputParser.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

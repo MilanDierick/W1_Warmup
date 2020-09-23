@@ -1,5 +1,10 @@
+#include <chrono>
+#include <iomanip>
+#include <ios>
 #include <iostream>
 #include <string>
+
+#include "ConsoleInputParser.h"
 
 namespace Utilities
 {
@@ -72,7 +77,8 @@ void EnterPositiveNumbers()
 // ***********************************
 // Start Exercise 2
 // ***********************************
-void DrawChessboard(const int columns, const int rows, const int squareSize, const char squareWhiteCharacter, const char squareBlackCharacter)
+void DrawChessboard(const int columns, const int rows, const int squareSize, const char squareWhiteCharacter,
+                    const char squareBlackCharacter)
 {
 	// Loop over all the required columns
 	for (size_t row = 0; row < rows; ++row)
@@ -126,13 +132,168 @@ int Chessboard()
 
 	return 0;
 }
+
 // ***********************************
 // End Exercise 2
 // ***********************************
 
-int main(int argc, char* argv[])
+// ***********************************
+// Start Exercise 3
+// ***********************************
+bool IsPrime(const int number)
 {
-	Chessboard();
-	
+	if (number < 2) return false;
+	if (number % 2 == 0 && number != 2) return false;
+	for (size_t counter = 3; counter <= std::sqrt(number); counter += 2)
+	{
+		if (number % counter == 0) return false;
+	}
+	return true;
+}
+
+void ConsoleIsPrime(int argc, char* argv[])
+{
+	// Putting this functionality into a class allows me to use this code in another project much easier
+	const Utilities::InputParser inputParser(argc, argv);
+
+	if (inputParser.CmdOptionExists("-h"))
+	{
+		std::cout << "Please pass a value that need to be checked with the -v parameter option, like so:\n";
+		std::cout << "program.exe -v 5\n";
+	}
+	else
+	{
+		const std::string value = inputParser.GetCmdOption("-v");
+		if (value == "")
+		{
+			std::cout << "Incorrect value passed. Pass the -h parameter for help.\n";
+		}
+		else
+		{
+			try
+			{
+				if (IsPrime(std::stoi(value)))
+				{
+					std::cout << value << " is a prime number!\n";
+				}
+				else
+				{
+					std::cout << value << " is not a prime number!\n";
+				}
+			}
+			catch (...)
+			{
+				std::cout << "Incorrect value passed. Pass the -h parameter for help.\n";
+			}
+		}
+	}
+}
+
+// ***********************************
+// End Exercise 3
+// ***********************************
+
+// ***********************************
+// Start Exercise 4
+// ***********************************
+void OutputAllPrimesBelowValue(int argc, char* argv[])
+{
+	// Putting this functionality into a class allows me to use this code in another project much easier
+	const Utilities::InputParser inputParser(argc, argv);
+
+	if (inputParser.CmdOptionExists("-h"))
+	{
+		std::cout << "Please pass a value that need to be checked with the -v parameter option, like so:\n";
+		std::cout << "program.exe -v 5\n";
+	}
+	else
+	{
+		const std::string value = inputParser.GetCmdOption("-v");
+		if (value == "")
+		{
+			std::cout << "Incorrect value passed. Pass the -h parameter for help.\n";
+		}
+		else
+		{
+			try
+			{
+				const int number = std::stoi(value);
+
+				for (size_t counter = 0; counter < number; ++counter)
+				{
+					if (IsPrime(static_cast<int>(counter)))
+					{
+						std::cout << counter << " is a prime number!\n";
+					}
+				}
+			}
+			catch (...)
+			{
+				std::cout << "Incorrect value passed. Pass the -h parameter for help.\n";
+			}
+		}
+	}
+}
+
+void OutputAllPrimesBelowValueExtension(int argc, char* argv[])
+{
+	// Putting this functionality into a class allows me to use this code in another project much easier
+	const Utilities::InputParser inputParser(argc, argv);
+
+	if (inputParser.CmdOptionExists("-h"))
+	{
+		std::cout << "Please pass a value that need to be checked with the -v parameter option, like so:\n";
+		std::cout << "program.exe -v 5\n";
+	}
+	else
+	{
+		const std::string value = inputParser.GetCmdOption("-v");
+		if (value == "")
+		{
+			std::cout << "Incorrect value passed. Pass the -h parameter for help.\n";
+		}
+		else
+		{
+			try
+			{
+				int counter      = 0;
+				const int number = std::stoi(value);
+
+				const std::chrono::steady_clock::time_point start = std::chrono::high_resolution_clock::now();
+				// Unsync the I/O of C and C++. 
+				std::ios_base::sync_with_stdio(false);
+				
+				for (size_t iterationCounter = 0; iterationCounter < number; ++iterationCounter)
+				{
+					if (IsPrime(static_cast<int>(iterationCounter)))
+					{
+						++counter;
+					}
+				}
+
+				const std::chrono::steady_clock::time_point stop = std::chrono::high_resolution_clock::now();
+				double timeTaken = static_cast<double>(std::chrono::duration_cast<std::chrono::nanoseconds>(stop - start).count()); 
+				timeTaken *= 1e-9; 
+
+				std::cout << "There are " << counter << " prime numbers that are smaller than the value " << number <<
+					"\n\n";
+				std::cout << "This operation took: " << std::fixed << timeTaken << std::setprecision(9) << " seconds\n";
+			}
+			catch (...)
+			{
+				std::cout << "Incorrect value passed. Pass the -h parameter for help.\n";
+			}
+		}
+	}
+}
+
+// ***********************************
+// End Exercise 4
+// ***********************************
+
+int main(const int argc, char* argv[])
+{
+	OutputAllPrimesBelowValueExtension(argc, argv);
+
 	return 0;
 }
